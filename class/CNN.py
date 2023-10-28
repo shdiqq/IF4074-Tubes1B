@@ -70,20 +70,23 @@ class CNN():
     print("=========================================================================================")
     for i in range(epoch):
       sumLoss = 0
-      for j in range(batchSize):
-        currentIndex = (batchSize * i + j) % len(features)
-        # Proses Forward Propagation
-        output = self.forward(features[currentIndex])
-        labelOutput = np.rint(np.append(labelOutput, output))
-        labelTarget = np.append(labelTarget, target[currentIndex])
-        sumLoss += self.calculateLoss(output, target[currentIndex])
+      idxReadInputData = 0
+      while ( idxReadInputData != len(features) ):
+        for j in range (batchSize):
+          # Proses Forward Propagation
+          output = self.forward(features[idxReadInputData])
+          labelOutput = np.rint(np.append(labelOutput, output))
+          labelTarget = np.append(labelTarget, target[idxReadInputData])
+          sumLoss += self.calculateLoss(output, target[idxReadInputData])
 
-        # Proses Backward Propagation
-        derivativeError = self.calculateDerivativeError(output, target[currentIndex])
-        derivativeError = self.backward(derivativeError)
+          # Proses Backward Propagation
+          derivativeError = self.calculateDerivativeError(output, target[idxReadInputData])
+          derivativeError = self.backward(derivativeError)
 
-      # Proses Update Weight dan Bias
-      self.updateWeightBias(learningRate, momentum)
+          idxReadInputData = idxReadInputData + 1
+
+        # Proses Update Weight dan Bias
+        self.updateWeightBias(learningRate, momentum)
 
       avgLoss = sumLoss/len(features)
 
